@@ -20,6 +20,7 @@ public class ViewFlight extends JFrame {
         String sql = "Select * From flights";
         showTable(sql);
     }
+
     private void showTable(String sql){
         
         try (Connection con = connect();
@@ -57,7 +58,7 @@ public class ViewFlight extends JFrame {
     }
     
     private Connection connect(){
-        String url = "jdbc:sqlite:C:\\Users\\user\\Desktop\\dataBase\\src\\database\\data.db";
+        String url = "jdbc:sqlite:lib\\data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
