@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Airport {
 	public ArrayList<Airplane> airplanes;
 	
-	public ArrayList<Airline> airlines:
 	
 	
 }

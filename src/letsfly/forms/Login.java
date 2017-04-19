@@ -5,6 +5,10 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
+import letsfly.forms.admin.Admin;
+import letsfly.forms.user.User;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -133,7 +137,7 @@ public class Login extends JFrame {
 		// log in
 		String userName1 = usernameTextField.getText();
 		String password1 = new String(passwordField.getPassword());
-		String sql = "SELECT username, password, isAdmin FROM accounts";
+		String sql = "SELECT username, password, name FROM accounts";
 		try (Connection con = connect(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 
 			// pstmt.setString(1, userName1);
@@ -145,15 +149,18 @@ public class Login extends JFrame {
 				String userName2 = rs.getString("username");
 				String password2 = rs.getString("password");
 				// String name = rs.getString("name");
-				Boolean isAdmin = rs.getBoolean("isAdmin");
+				String name = rs.getString("name");
 
-				System.out.println(userName2 + "   " + password2 + "   " + isAdmin);
+				System.out.println(userName2 + "   " + password2);
 				if (userName2.equals(userName1) && password1.equals(password2)) {
 					// log in succesful
 					JOptionPane.showMessageDialog(null, "Log In successful");
-					if (isAdmin) {
+					if (userName1.equals("admin")) {
 						this.dispose();
 						new Admin().setVisible(true);
+					} else {
+						this.dispose();
+						new User(name).setVisible(true);
 					}
 					return;
 				}
