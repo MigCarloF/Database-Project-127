@@ -20,6 +20,7 @@ public class ViewFlight extends JFrame {
         String sql = "Select * From flights";
         showTable(sql);
     }
+
     private void showTable(String sql){
         
         try (Connection con = connect();
@@ -37,7 +38,7 @@ public class ViewFlight extends JFrame {
             if (l.isEmpty()){
                 JOptionPane.showMessageDialog(this, "No results Found");
             } else {
-                int row = l.size() / 6;
+                int row = l.size() / 6; //why 6
                 String[][] data = new String[row][6];
                 for (int i = 0; i < row; i++){
                     data[i][0] = l.get(6 * i);
@@ -57,7 +58,7 @@ public class ViewFlight extends JFrame {
     }
     
     private Connection connect(){
-        String url = "jdbc:sqlite:C:\\Users\\user\\Desktop\\dataBase\\src\\database\\data.db";
+        String url = "jdbc:sqlite:lib\\data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
