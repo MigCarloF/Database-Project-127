@@ -97,7 +97,7 @@ public class Login extends JFrame {
     }                        
 
     private Connection connect(){
-        String url = "jdbc:sqlite:C:\\Users\\user\\Desktop\\dataBase\\src\\database\\data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
@@ -112,29 +112,33 @@ public class Login extends JFrame {
         // log in
         String userName1 = usernameTextField.getText();
         String password1 = new String(passwordField.getPassword());
-        String sql = "Select username, password From accounts Where username == ? AND password == ?";
+        String sql = "SELECT username, password, isAdmin FROM accounts";
         try (Connection con = connect();
             PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-            pstmt.setString(1, userName1);
-            pstmt.setString(2, password1);
+            //pstmt.setString(1, userName1);
+           // pstmt.setString(2, password1);	//What is this for?//
 
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()){
                 String userName2 = rs.getString("username");
                 String password2 = rs.getString("password");
-                System.out.println(userName2 + "   " + password2);
+                //String name = rs.getString("name");
+                Boolean isAdmin = rs.getBoolean("isAdmin");
+                
+                System.out.println(userName2 + "   " + password2 + "   " + isAdmin);
                 if (userName2.equals(userName1) && password1.equals(password2)){
                     // log in succesful
                     JOptionPane.showMessageDialog(null, "Log In successful");
-                    if (userName2.equals("admin")){
+                    if (isAdmin){
                         this.dispose();
                         new Admin().setVisible(true);
                     }
                     return;
                 }
             }
+            
             JOptionPane.showMessageDialog(null, "Account does not exist", "", JOptionPane.ERROR_MESSAGE);
             rs.close();
             pstmt.close();
