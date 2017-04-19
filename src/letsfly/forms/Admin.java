@@ -18,7 +18,7 @@ public class Admin extends JFrame {
 
         jLabel1 = new JLabel("Admin");
         jButton2 = new JButton("View Flights");
-        jButton3 = new JButton("Edit Flight");
+        jButton3 = new JButton("Delete Flight");
         jButton4 = new JButton("Add Flight");
 
 
@@ -74,22 +74,27 @@ public class Admin extends JFrame {
                 .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
-
+        setResizable(false);
         pack();
     }                                          
 
                                        
     private void jButton2ActionPerformed(ActionEvent evt) {
-        ViewFlight v = new ViewFlight();
+        this.setVisible(false);
+        ViewFlight v = new ViewFlight("admin");
         v.setVisible(true);
-        setEnabled(false);
-        if (!v.isActive()){
-            setEnabled(true);
-        }
-    }                                        
+    }
+    
     private void jButton3ActionPerformed(ActionEvent evt) {                                         
+        this.setVisible(false);
+        DeleteFlight df = new DeleteFlight();
+        df.setVisible(true);
     }                                        
-    private void jButton4ActionPerformed(ActionEvent evt) {                                         
+    private void jButton4ActionPerformed(ActionEvent evt) { 
+        this.setVisible(false);
+        AddFlight af = new AddFlight();
+        af.setVisible(true);
+        
     }                                        
 
 //    public static void main(String args[]) {

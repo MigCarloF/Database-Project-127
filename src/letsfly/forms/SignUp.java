@@ -48,8 +48,13 @@ public class SignUp extends JFrame {
         jLabel6 = new JLabel();
         jButton3 = new JButton();
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                new Login().setVisible(true);
+            }
+        });
+        
         jLabel3.setFont(new Font("Times New Roman", 0, 16)); // NOI18N
         jLabel3.setText("Name");
 
@@ -133,12 +138,12 @@ public class SignUp extends JFrame {
                 .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
+        setResizable(false);
         pack();
     }
     
      private Connection connect(){
-        String url = "jdbc:sqlite:C:\\Users\\user\\Desktop\\dataBase\\src\\db\\data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
@@ -182,18 +187,8 @@ public class SignUp extends JFrame {
             }
             JOptionPane.showMessageDialog(null, "Successful Sign Up");
             this.dispose();
+            new Login().setVisible(true);
         }
     }                                        
 
-//    public static void main(String args[]) {
-////        EventQueue.invokeLater(new Runnable() {
-////            public void run() {
-//                new SignUp().setVisible(true);
-////            }
-////        });
-//    }
-
-    
-    
 }
-

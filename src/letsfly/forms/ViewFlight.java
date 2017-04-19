@@ -14,13 +14,14 @@ public class ViewFlight extends JFrame {
     private JButton searchButton;
     private JTextField searchField;
     private JComboBox<String> searchType;
+    private String parent;
 
-    public ViewFlight() {
+    public ViewFlight(String parent) {
         initComponents();
         String sql = "Select * From flights";
         showTable(sql);
+        this.parent = parent;
     }
-
     private void showTable(String sql){
         
         try (Connection con = connect();
@@ -29,26 +30,32 @@ public class ViewFlight extends JFrame {
             java.util.List<String> l = new ArrayList<>();
             while (rs.next()) {
                 l.add(String.valueOf(rs.getInt("flightNum")));
-                l.add(rs.getString("airline"));
+                l.add(rs.getString("airport"));
+                l.add(rs.getString("airplane"));
                 l.add(rs.getString("destinationFrom"));
                 l.add(rs.getString("destinationTo"));
                 l.add(rs.getString("date"));
                 l.add(String.valueOf(rs.getInt("capacity")));
             }
             if (l.isEmpty()){
+                System.out.println("12312312312312312");
                 JOptionPane.showMessageDialog(this, "No results Found");
             } else {
-                int row = l.size() / 6; //why 6
-                String[][] data = new String[row][6];
+                int row = l.size() / 7;
+
+                String[][] data = new String[row][7];
                 for (int i = 0; i < row; i++){
-                    data[i][0] = l.get(6 * i);
-                    data[i][1] = l.get(6 * i + 1);
-                    data[i][2] = l.get(6 * i + 2);
-                    data[i][3] = l.get(6 * i + 3);
-                    data[i][4] = l.get(6 * i + 4);
-                    data[i][5] = l.get(6 * i + 5);
+
+                    data[i][0] = l.get(7 * i);
+                    data[i][1] = l.get(7 * i + 1);
+                    data[i][2] = l.get(7 * i + 2);
+                    data[i][3] = l.get(7 * i + 3);
+                    data[i][4] = l.get(7 * i + 4);
+                    data[i][5] = l.get(7 * i + 5);
+                    data[i][6] = l.get(7 * i + 6);
                 }
-                String column[] = {"FlightNum", "Airline", "DestinationFrom", "DestinationTo",  "date", "capacity"};
+                
+                String column[] = {"FlightNum", "Airport", "Airplane", "DestinationFrom", "DestinationTo",  "date", "capacity"};
 
                 jTable1.setModel(new DefaultTableModel(data, column));
             }
@@ -58,7 +65,7 @@ public class ViewFlight extends JFrame {
     }
     
     private Connection connect(){
-        String url = "jdbc:sqlite:lib\\data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
@@ -79,7 +86,16 @@ public class ViewFlight extends JFrame {
         searchType = new JComboBox<>();
         searchButton = new JButton();
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (parent.equals("admin")){
+                    new Admin().setVisible(true);
+                } else {
+                    
+                }
+            }
+        });
 
         jTable1.setFont(new Font("Times New Roman", 0, 16)); // NOI18N
         jTable1.setModel(new DefaultTableModel(
@@ -104,7 +120,7 @@ public class ViewFlight extends JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         
-        searchType.setModel(new DefaultComboBoxModel<>(new String[] { "Type", "Airline", "Date", "DestinationTo", "DestinationFrom" }));
+        searchType.setModel(new DefaultComboBoxModel<>(new String[] { "All", "Airport", "Airplane", "Date", "DestinationTo", "DestinationFrom" }));
         
         searchButton.setText("Search");
         searchButton.addActionListener(new ActionListener() {
@@ -142,15 +158,15 @@ public class ViewFlight extends JFrame {
                 .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
+        setResizable(false);
         pack();
     }                        
 
     private void searchButtonActionPerformed(ActionEvent evt) {                                             
         String search = searchField.getText();
         String type = searchType.getSelectedItem().toString();
-        if (type.equals("Type")){
-            JOptionPane.showMessageDialog(this, "Select Search Type", "", JOptionPane.ERROR_MESSAGE);
+        if (type.equals("All")){
+            showTable("Select * From flights");
         } else {
             String sql = "Select * From flights Where " + type + " == \"" + search + "\"";
             showTable(sql);
@@ -180,10 +196,9 @@ public class ViewFlight extends JFrame {
         
 //        EventQueue.invokeLater(new Runnable() {
 //            public void run() {
-//                new ViewFlight().setVisible(true);
+//                new ViewFlight("admin").setVisible(true);
 //            }
 //        });
 //    }
 }
    
-
