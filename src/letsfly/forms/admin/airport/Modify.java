@@ -32,14 +32,23 @@ public class Modify extends JFrame {
     
     public Modify() {
         initComponents();
-        String sql = "Select airportid from airports";
+        String sql = "SELECT * from airports";
         List<String> l = new ArrayList<>();
         try (Connection con = connect();
              Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql)){
-            while(rs.next()){
-                l.add(rs.getString("airportId"));
+            int i = 0;
+            String country = "";
+            String airportName = "";
+        	while(rs.next()){
+                l.add(rs.getString("airportID"));
+                if (i == 0){
+                	country = rs.getString("country");
+                	airportName = rs.getString("airportName");
+                }
             }
+        	jTextField1.setText(country);
+        	jTextField3.setText(airportName);
             String choices[] = new String[l.size()];
             choices = l.toArray(choices);
             airportChoice.setModel(new DefaultComboBoxModel<>(choices));            
@@ -56,6 +65,7 @@ public class Modify extends JFrame {
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
         jTextField1 = new JTextField();
+        jTextField1.setEditable(false);
         jLabel3 = new JLabel();
         countryText = new JTextField();
         jLabel4 = new JLabel();
@@ -67,12 +77,31 @@ public class Modify extends JFrame {
         deleteAirlineButton = new JButton();
         confirmButton = new JButton();
         airportChoice = new JComboBox<>();
+        airportChoice.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		
+        		String sql = "SELECT country, airportName FROM airports WHERE airportID == '" + airportChoice.getSelectedItem().toString() + "'";
+                List<String> l = new ArrayList<>();
+                try (Connection con = connect();
+                     Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(sql)){
+                	
+                	jTextField1.setText(rs.getString("country"));
+                	jTextField3.setText(rs.getString("airportName"));
+                	
+                } catch(SQLException e2){
+                    System.out.println(e2.getMessage());
+                }
+
+        	}
+        });
         jLabel7 = new JLabel();
 
 
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
+                dispose();
                 new EditAirport().setVisible(true);
             }
         });
@@ -83,8 +112,6 @@ public class Modify extends JFrame {
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jLabel2.setText("Country :");
-
-        jTextField1.setEditable(false);
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         jLabel3.setText("Change To :");
@@ -214,7 +241,7 @@ public class Modify extends JFrame {
     }             
 
     private Connection connect(){
-        String url = "jdbc:sqlite:data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
@@ -225,7 +252,8 @@ public class Modify extends JFrame {
         return con;
     }
     
-    private void addAirlineButtonActionPerformed(ActionEvent evt) {                                                 
+    private void addAirlineButtonActionPerformed(ActionEvent evt) {      
+       
         new AddAirline(airportChoice.getSelectedItem().toString(), "modify").setVisible(true);
     }                                                
 
@@ -251,6 +279,9 @@ public class Modify extends JFrame {
             update(sql2);
         }
         JOptionPane.showMessageDialog(null, "Changes have been saved");
+        this.dispose();
+        new EditAirport().setVisible(true);
+        
     }
     
     private void update(String sql){

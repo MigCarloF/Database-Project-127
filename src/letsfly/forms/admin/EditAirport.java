@@ -24,9 +24,13 @@ public class EditAirport extends JFrame {
         addAirportButton = new JButton();
         deleteAirportButton = new JButton();
         ModifyAirportButton = new JButton();
-
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                dispose();
+                new Admin().setVisible(true);
+            }
+        });
         title.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
         title.setText("Edit Airport");
 
@@ -85,14 +89,17 @@ public class EditAirport extends JFrame {
     }
 
     private void deleteAirportButtonActionPerformed(ActionEvent evt) {                                                    
+        dispose();
         new DeleteAirport().setVisible(true);
     }                                                   
 
     private void ModifyAirportButtonActionPerformed(ActionEvent evt) {                                                    
+        dispose();
         new Modify().setVisible(true);
     }                                                   
 
     private void addAirportButtonActionPerformed(ActionEvent evt) {                                                 
+        dispose();
         new AddAirport().setVisible(true);
     }                                                
 

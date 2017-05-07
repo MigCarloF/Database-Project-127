@@ -68,7 +68,7 @@ public class DeleteAirport extends javax.swing.JFrame {
     
     
     private Connection connect(){
-        String url = "jdbc:sqlite:data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");

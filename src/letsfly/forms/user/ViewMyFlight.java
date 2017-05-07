@@ -1,30 +1,34 @@
-package letsfly.forms;
+package letsfly.forms.user;
 
 import java.sql.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
-
-import letsfly.forms.admin.Admin;
-
 import java.awt.*;
 import java.awt.event.*;
 
 
-public class ViewFlight extends JFrame {
+public class ViewMyFlight extends JFrame {
     private JScrollPane jScrollPane1;
     private JTable jTable1;
     private JButton searchButton;
     private JTextField searchField;
     private JComboBox<String> searchType;
-    private String parent;
-
-    public ViewFlight(String parent) {
+    private int userId;
+    private String userName;
+   
+    
+    public ViewMyFlight(String userName, int userId) {
         initComponents();
-        String sql = "Select * From flights";
+        String sql = "Select DISTINCT flightNum, airlineID, destinationFrom, destinationTo, date, departureTime "
+                + "from (Select * from flights join bookedFlights ON bookedFlights.flightNum = flights.flightNum ) \n" +
+                "where userid == '" + userId + "'";
         showTable(sql);
-        this.parent = parent;
+        this.userName = userName;
+        this.userId = userId;
     }
+    
+   
     private void showTable(String sql){
         
         try (Connection con = connect();
@@ -43,7 +47,7 @@ public class ViewFlight extends JFrame {
                 JOptionPane.showMessageDialog(this, "No results Found");
             } else {
                 int row = l.size() / 6;
-
+                System.out.println(row);
                 String[][] data = new String[row][6];
                 for (int i = 0; i < row; i++){
 
@@ -64,7 +68,7 @@ public class ViewFlight extends JFrame {
         }
     }
     
-    private Connection connect(){
+    public Connection connect(){
         String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
@@ -75,8 +79,6 @@ public class ViewFlight extends JFrame {
         }
         return con;
     }
-    
-
     
     private void initComponents() {
 
@@ -89,7 +91,8 @@ public class ViewFlight extends JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                    new Admin().setVisible(true);
+                new User(userName, userId).setVisible(true);
+                
             }
         });
 
@@ -116,7 +119,7 @@ public class ViewFlight extends JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         
-        searchType.setModel(new DefaultComboBoxModel<>(new String[] { "All", "AirlineID", "DestinationFrom", "DestinationTo", "Date", "DepartureTime"}));
+        searchType.setModel(new DefaultComboBoxModel<>(new String[] { "All", "AirlineID", "Date", "DestinationTo", "DestinationFrom", "Departure Time" }));
         
         searchButton.setText("Search");
         searchButton.addActionListener(new ActionListener() {
@@ -162,14 +165,44 @@ public class ViewFlight extends JFrame {
         String search = searchField.getText();
         String type = searchType.getSelectedItem().toString();
         if (type.equals("All")){
-            showTable("Select * From flights");
+            String sql = "Select distinct flightNum, airlineID, destinationFrom, destinationTo, date, departureTime "
+                + "from (Select * from flights join bookedFlights ON bookedFlights.flightNum = flights.flightNum) \n" +
+                "where userid == \"" + userId + "\"";
+            showTable(sql);
         } else {
-            String sql = "Select * From flights Where " + type + " == \"" + search + "\"";
+            String sql = "Select distinct flightNum, airlineID, destinationFrom, destinationTo, date, departureTime "
+                + "from (Select * from flights join bookedFlights ON bookedFlights.flightNum = flights.flightNum) \n" +
+                "where userid == \"" + userId + "\" and " + type + " == \"" + search + "\"";
             showTable(sql);
         }
         searchField.setText("");
         
     }                                            
 
+//    public static void main(String args[]) {
+        
+//        try {
+//            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(ViewFlight1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(ViewFlight1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(ViewFlight1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(ViewFlight1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+        
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new ViewMyFlight("", 10).setVisible(true);
+//            }
+//        });
+//    }
 }
    

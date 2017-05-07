@@ -15,8 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
-import javax.swing.WindowConstants;
-
 
 
 public class SignUp extends JFrame {
@@ -167,7 +165,7 @@ public class SignUp extends JFrame {
             JOptionPane.showMessageDialog(null, "Password does not Match", "", JOptionPane.ERROR_MESSAGE);
         }
         else {
-            String sql = "INSERT INTO ACCOUNTS (name, username, password) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO ACCOUNTS (name, username, password, isAdmin) VALUES (?, ?, ?, 0)";
             try (Connection con = connect();
                 PreparedStatement pstmt = con.prepareStatement(sql)){
                 pstmt.setString(1, jTextField3.getText());

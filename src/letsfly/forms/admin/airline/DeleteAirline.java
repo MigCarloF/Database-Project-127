@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import letsfly.forms.admin.airport.Modify;
 
 public class DeleteAirline extends javax.swing.JFrame {
     
@@ -68,7 +68,7 @@ public class DeleteAirline extends javax.swing.JFrame {
     
     
     private Connection connect(){
-        String url = "jdbc:sqlite:data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
@@ -92,7 +92,8 @@ public class DeleteAirline extends javax.swing.JFrame {
 
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-//                    new Admin().setVisible(true);
+                dispose();
+                new Modify().setVisible(true);
             }
         });
 
@@ -227,11 +228,12 @@ public class DeleteAirline extends javax.swing.JFrame {
                  stmt.executeUpdate(sql2);
                  System.out.println(sql2);
                  JOptionPane.showMessageDialog(this, "Successfully deleted airlines");
+                 this.dispose();
+                 new Modify().setVisible(true);
+ 
             } catch (SQLException e){
                 System.out.println(e.getMessage());
             }
-            this.dispose();
-//            new Admin().setVisible(true);
         }
     }                                            
 

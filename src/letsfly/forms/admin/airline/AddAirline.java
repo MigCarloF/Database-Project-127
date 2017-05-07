@@ -43,7 +43,11 @@ public class AddAirline extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
+                if (!parent.equals("editAirport")){
+                new Modify().setVisible(true);
+            } else{
                 new EditAirport().setVisible(true);
+            }
             }
         });
 
@@ -129,7 +133,7 @@ public class AddAirline extends JFrame {
 
    
      private Connection connect(){
-        String url = "jdbc:sqlite:data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
@@ -151,9 +155,6 @@ public class AddAirline extends JFrame {
             stmt.setString(3, airport);
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Airline added");
-            if (!parent.equals("editAirport")){
-                new Modify().setVisible(true);
-            }
             stmt.close();
             con.close();
         } catch (SQLException e){
@@ -176,7 +177,12 @@ public class AddAirline extends JFrame {
         } else {
             add();
             dispose();
-            new EditAirport().setVisible(true);
+//            new EditAirport().setVisible(true);
+            if (!parent.equals("editAirport")){
+                new Modify().setVisible(true);
+            } else{
+                new EditAirport().setVisible(true);
+            }
         }
     }                                          
 

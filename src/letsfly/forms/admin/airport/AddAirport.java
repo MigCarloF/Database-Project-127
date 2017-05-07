@@ -120,7 +120,7 @@ public class AddAirport extends JFrame {
     }
     
      private Connection connect(){
-        String url = "jdbc:sqlite:data.db";
+        String url = "jdbc:sqlite:lib/data.db";
         Connection con = null;
         try{
             Class.forName("org.sqlite.JDBC");
@@ -144,6 +144,7 @@ public class AddAirport extends JFrame {
                 stmt.setString(1, airportId);
                 stmt.setString(2, airportName);
                 stmt.setString(3, country);
+                stmt.executeUpdate();
                 con.close();
                 stmt.close();
                 JOptionPane.showMessageDialog(null, "Airport added");
